@@ -1,7 +1,10 @@
 package toutiao_test;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
+
+import javax.print.attribute.ResolutionSyntax;
 
 import org.junit.Test;
 
@@ -146,4 +149,132 @@ public class Solution {
 		        flag[index] = 0;  //回溯的体现，若没有找到，则重新设置为0
 		        return false;
 		    }
+	/*
+	 * 地上有一个m行和n列的方格。
+	 * 一个机器人从坐标0,0的格子开始移动，每一次只能向左，右，上，下四个方向移动一格，
+	 * 但是不能进入行坐标和列坐标的数位之和大于k的格子。
+	 * 例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。
+	 * 但是，它不能进入方格（35,38），因为3+5+3+8 = 19。
+	 * 请问该机器人能够达到多少个格子？
+	 */
+	public int movingCount(int threshold, int rows, int cols)
+	{
+		int[][] flag = new int[rows][cols];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				flag[i][j] = 0;
+			}
+		}
+		return findmaxnum(0, 0, threshold, rows, cols, flag);
+	}
+	public int add(int x,int y) {
+		String x1 = String.valueOf(x);
+		String y1 = String.valueOf(y);
+		int num = 0;
+		for (int i = 0; i < x1.length(); i++) {
+			num += x1.charAt(i)-'0';			
+		}
+		for (int i = 0; i < y1.length(); i++) {
+			num += y1.charAt(i)-'0';
+		}
+		return num;
+	}
+	public int findmaxnum(int x,int y,int threshold,int rows,int cols,int[][] flag) {		
+		if (x<0||x>=rows||y>=cols||y<0||add(x, y)>threshold||flag[x][y]==1) {
+			return 0;
+		}
+		flag[x][y] = 1;
+		return findmaxnum(x-1, y, threshold, rows, cols, flag)+
+			   findmaxnum(x+1, y, threshold, rows, cols, flag)+
+			   findmaxnum(x, y-1, threshold, rows, cols, flag)+
+			   findmaxnum(x, y+1, threshold, rows, cols, flag)+1;
+
+	}
+	@Test
+	public void test() {
+		System.out.println(add(20, 31));
+	}
+	/*
+	 * 给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。
+	 * 例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动窗口的大小3，
+	 * 那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}； 
+	 * 针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个： 
+	 * {[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， 
+	 * {2,3,[4,2,6],2,5,1}， {2,3,4,[2,6,2],5,1}， 
+	 * {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。
+	 */
+	public ArrayList<Integer> maxInWindows(int [] num, int size)
+    {
+		
+        ArrayList<Integer> list = new ArrayList<>();
+        if (size==0) {
+			return list;
+		}
+        for (int i = 0; i <= num.length-size; i++) {
+			int a = getmax(num, i, i+size);
+			list.add(a);
+		}
+        return list;
+    }
+	public int getmax(int[] num ,int begin, int end) {
+		int max = 0;
+		for (int i = begin; i < end; i++) {
+			if (num[i]>max) {
+				max = num[i];
+			}
+		}
+		return max;
+	}
+	/*
+	 * 给定一棵二叉搜索树，请找出其中的第k小的结点。
+	 * 例如， （5，3，7，2，4，6，8）    中，按结点数值大小顺序第三小结点的值为4。
+	 */
+	/*
+	 * 正确代码：
+public class Solution {
+   int index = 0; //计数器
+    TreeNode KthNode(TreeNode root, int k)
+    {
+        if(root != null){ //中序遍历寻找第k个
+            TreeNode node = KthNode(root.left,k);
+            if(node != null)
+                return node;
+            index ++;
+            if(index == k)
+                return root;
+            node = KthNode(root.right,k);
+            if(node != null)
+                return node;
+        }
+        return null;
+    }
+}
+	 */
+	//我的代码
+	int count = 0;
+	TreeNode treeNode;
+	TreeNode KthNode(TreeNode pRoot, int k)
+    {
+		fiNode(pRoot, k);
+		if (treeNode==null||k==0) {
+			return null;
+		}
+		return treeNode;
+    }
+	public void fiNode(TreeNode node,int k) {
+		if (node.left!=null) {
+			fiNode(node.left, k);
+		}
+		count += 1;
+		if (count==k) {
+			treeNode = node;
+			return;
+		}
+		if (count>k) {
+			return;
+		}
+		if (node.right!=null) {
+			fiNode(node.right, k);
+		}
+	}
 }
