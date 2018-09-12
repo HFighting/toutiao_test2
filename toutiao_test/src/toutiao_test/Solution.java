@@ -2,11 +2,12 @@ package toutiao_test;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
-
 
 import org.junit.Test;
 
@@ -500,7 +501,7 @@ public class Solution {
 		return p1;
 	}
 	
-	/*
+	/* 判断字符串是否是数值
 	 * 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
 	 * 例如，字符串"+100","5e2","-123","3.1416"和"-1E-16"都表示数值。
 	 * 但是"12e","1a3.14","1.2.3","+-5"和"12e+4.3"都不是。
@@ -596,5 +597,242 @@ public class Solution {
 		}
 		return B;
     }
+	/*
+	 * 在一个长度为n的数组里的所有数字都在0到n-1的范围内。
+	 *  数组中某些数字是重复的，但不知道有几个数字是重复的。
+	 *  也不知道每个数字重复几次。
+	 *  请找出数组中任意一个重复的数字。
+	 *   例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
+	 */
+	//numbers是数组，length是该数组的长度，duplication是重复的数字，duplication的长度为1
+	public boolean duplicate(int numbers[],int length,int [] duplication) {
+	    for (int i = 0; i < length; i++) {
+			int a = numbers[i];
+			if (a<length) {
+				for (int j = 0; j < length; j++) {
+					if (j==i) {
+						continue;
+					}else {
+						if (numbers[j]==a) {
+							duplication[0] = a;
+							return true;
+						}
+					}
+				}
+			}else {
+				return false;
+			}			
+		}
+		return false;
+    }
+	/*
+	 * 将一个字符串转换成一个整数(实现Integer.valueOf(string)的功能，但是string不符合数字要求时返回0)，
+	 * 要求不能使用字符串转换整数的库函数。
+	 * 数值为0或者字符串不是一个合法的数值则返回0。
+	 */
+	public int StrToInt(String str) {
+        String string = "[+|-]?([1-9]\\d+|[0-9])";
+        if (str.matches(string)) {
+			if (str.charAt(0)=='+'||str.charAt(0)=='-') {
+				if (str.charAt(0)=='+') {
+					String string2 = str.substring(1);
+					int length = string2.length();
+					int num = 0 ;
+					for (int i = 0; i < length; i++) {
+						num += (string2.charAt(i)-'0')*Math.pow(10, length-i-1);
+					}
+					return num;
+				}else {
+					String string2 = str.substring(1);
+					int length = string2.length();
+					int num = 0 ;
+					for (int i = 0; i < length; i++) {
+						num -= (string2.charAt(i)-'0')*Math.pow(10, length-i-1);
+					}
+					return num;
+				}
+				
+			}else{
+				int length = str.length();
+				int num = 0 ;
+				for (int i = 0; i < length; i++) {
+					num += (str.charAt(i)-'0')*Math.pow(10, length-i-1);
+				}
+				return num;
+			}
+		}else {
+			return 0;
+		}
+    }
 	
+	/*
+	 * 写一个函数，求两个整数之和，要求在函数体内不得使用+、-、*、/四则运算符号。
+	 */
+	@Test
+	public void Add() {
+		int num1 = 20;
+		int num2 = 5;
+		while (num2!=0) {
+		    int temp = num1^num2;
+		    num2 = (num1&num2)<<1;
+		    num1 = temp;
+		}
+		System.out.println(num1);
+	}
+	
+	/*
+	 * 给定一个字符串 s，找到 s中最长的回文子串。你可以假设 s 的最大长度为1000。
+		示例 1：
+		输入: "babad"
+		输出: "bab"
+		注意: "aba"也是一个有效答案。
+		示例 2：
+		输入: "cbbd"
+		输出: "bb"
+	 */
+	/*
+	 * 思路:中心扩展法
+	 * 此时有两种情况：
+	 * 		1、回文子串长度为奇数
+	 * 		2、回文子串长度为偶数
+	 */
+	@Test
+	public void longestPalindrome() {
+		String s = "babad";
+		int max = 0;
+		int begin = 0;
+		int end = 0;
+		for (int i = 0; i < s.length()-1; i++) {
+			int len1 = findmaxlenght(s, i, i);
+			int len2 = findmaxlenght(s, i, i+1);
+			int a = Math.max(len1, len2);
+			if (a>max) {
+				max = a;
+				begin = i-(max-1)/2;
+				end = i+max/2;
+			}
+		}
+		System.out.println(s.substring(begin, end+1));		
+	}
+	public static int findmaxlenght(String s,int i,int j) {
+		
+		while (i>=0&&j<s.length()&&s.charAt(i)==s.charAt(j)) {
+			i--;
+			j++;
+		}		
+		return j-i-1;
+	}
+	
+	/*
+	 * 在找到第一个非空字符之前，需要移除掉字符串中的空格字符。
+	 * 如果第一个非空字符是正号或负号，选取该符号，并将其与后面尽可能多的连续的数字组合起来，这部分字符即为整数的值。
+	 * 如果第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成整数。
+	 * 字符串可以在形成整数的字符后面包括多余的字符，这些字符可以被忽略，它们对于函数没有影响。
+	 * 当字符串中的第一个非空字符序列不是个有效的整数；或字符串为空；或字符串仅包含空白字符时，则不进行转换。
+	 * 若函数不能执行有效的转换，返回 0。
+	 */
+	@Test
+	public void myAtoi() {
+		String str = "-91283472332";
+		int length = str.length();
+		String snum = "";
+        for (int i = 0; i < length; i++) {
+			if (str.charAt(i)=='-'||str.charAt(i)=='+') {
+				for (int j = i+1; j < length; j++) {
+					if (str.charAt(j)-'0'<=9&&str.charAt(j)-'0'>=0) {
+						snum += str.charAt(j);
+					}
+				}
+				if (str.charAt(i)=='-') {
+					try {
+						System.out.println(-Integer.parseInt(snum));
+					} catch (NumberFormatException e) {
+						System.out.println(-Math.pow(2, 31));
+					}
+					return;
+				}else {
+					try {
+						System.out.println(Integer.parseInt(snum));
+					} catch (NumberFormatException e) {
+						System.out.println(Math.pow(2, 31)-1);
+					}
+					return;
+				}
+			}else if (str.charAt(i)-'0'<=9&&str.charAt(i)-'0'>=0) {
+				for (int j = i; j < length; j++) {
+					if (str.charAt(j)-'0'<=9&&str.charAt(j)-'0'>=0) {
+						snum += str.charAt(j);
+					}
+				}
+				try {
+					System.out.println(Integer.parseInt(snum));
+				} catch (NumberFormatException e) {
+					System.out.println(Math.pow(2, 31)-1);
+				}
+				return;
+			}			
+		}				
+		System.out.println(0);
+    }
+	
+	/* 字符串公共前缀
+	 * 编写一个函数来查找  字符串数组  中的最长公共前缀。
+	 * 如果不存在公共前缀，返回空字符串 ""。
+	 */
+	public String longestCommonPrefix(String[] strs) {
+		if (strs==null) {
+			return "";
+		}
+        int length = strs[0].length();
+		for (int i = 1; i < strs.length; i++) {
+			if (strs[i].length()<length) {
+				length = strs[i].length();
+			}
+		}
+		if (length==0) {
+			return "";
+		}
+		for (int i = 0; i < length; i++) {
+			char c = strs[0].charAt(i);
+			for (int j = 0; j < strs.length; j++) {
+				if (strs[j].charAt(i)!=c) {
+					return strs[0].substring(0, j);
+				}
+			}
+		}				
+		return "";
+    }
+	
+	/*
+	 * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
+	 * 注意：答案中不可以包含重复的三元组。
+	 * 暴力解答法，可惜时间超时
+	 */
+	@Test
+	public void threeSum() {
+		int[] nums = {-1, 0, 1, 2, -1, -4};
+		List<List<Integer>> list = new ArrayList<>();
+		Arrays.sort(nums);		
+		for (int i = 0; i < nums.length; i++) {			
+			for (int j = i+1; j < nums.length; j++) {				
+				for (int j2 = j+1; j2 < nums.length; j2++) {
+					List<Integer> bufferlist = new ArrayList<>();//
+					if (nums[i]+nums[j]+nums[j2]==0) {
+						bufferlist.add(nums[i]);
+						bufferlist.add(nums[j]);
+						bufferlist.add(nums[j2]);
+						if (!list.contains(bufferlist)) {
+							list.add(bufferlist);//list添加的是bufferlist的引用，若bufferlist清空，则list中的值也会清空							
+						}
+					}
+				}
+			}
+		}		
+		for (List<Integer> list2 : list) {
+			for (Integer integer : list2) {
+				System.out.print(integer+" ");
+			}
+			System.out.println();
+		}
+    }	
 }
