@@ -570,9 +570,6 @@ public class Solution {
 				return false;
 			}
 		}
-		if (str==null&&pattern[length2]=='.'&&pattern[length2]=='*') {
-			return true;
-		}
 		return false;
 	}
 	
@@ -803,7 +800,7 @@ public class Solution {
 		return "";
     }
 	
-	/*
+	/* 三数之和
 	 * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
 	 * 注意：答案中不可以包含重复的三元组。
 	 * 暴力解答法，可惜时间超时
@@ -835,4 +832,107 @@ public class Solution {
 			System.out.println();
 		}
     }	
+	/*
+	 * 四数之和问题
+	 * 给定一个包含 n个整数的数组 nums和一个目标值 target，
+	 * 判断 nums中是否存在四个元素 a，b，c 和 d，使得 a + b + c + d 的值与 target相等？找出所有满足条件且不重复的四元组。
+	 */
+	public List<List<Integer>> fourSum(int[] nums, int target) {
+		List<List<Integer>> list = new ArrayList<>();
+		Arrays.sort(nums);		
+		for (int i = 0; i < nums.length; i++) {			
+			for (int j = i+1; j < nums.length; j++) {				
+				for (int j2 = j+1; j2 < nums.length; j2++) {
+					for (int k = j2+1; k < nums.length; k++) {
+						List<Integer> bufferlist = new ArrayList<>();
+						if (nums[i]+nums[j]+nums[j2]+nums[k]==0) {
+							bufferlist.add(nums[i]);
+							bufferlist.add(nums[j]);
+							bufferlist.add(nums[j2]);
+							bufferlist.add(nums[k]);
+							if (!list.contains(bufferlist)) {
+								list.add(bufferlist);
+							}
+						}
+					}
+					
+				}
+			}
+		}		
+		if (list.isEmpty()) {
+			return null;
+		}
+		return list;
+    }
+	//统计所有小于非负整数 n 的质数的数量。
+	public int countPrimes(int n) {
+		if (n==0) {
+			return 0;
+		}
+        int count = 0;
+		for (int i = 2; i < n; i++) {
+			int temp = (int)Math.sqrt(i);
+			boolean flag = true;
+			for (int j = 2; j <= temp; j++) {
+				if (i%j==0) {
+					flag = false;
+					break;
+				}else {
+					continue;
+				}
+			}
+			if (flag) {
+				count++;
+			}
+		}
+		
+		return count;
+    }
+	/*
+	 * 给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。
+	 * 给定一个链表: 1->2->3->4->5, 和 n = 2.
+	 * 当删除了倒数第二个节点后，链表变为 1->2->3->5.
+	 */
+	/**
+	 * Definition for singly-linked list.
+	 * public class ListNode {
+	 *     int val;
+	 *     ListNode next;
+	 *     ListNode(int x) { val = x; }
+	 * }
+	 */
+	public static int count1 = 0;
+	public ListNode removeNthFromEnd(ListNode head, int n) {       
+		if (head.next==null&&n ==1) {
+			return null;
+		}
+		if (head.next.next==null&&n ==1) {
+			head.next = null;
+			return head;
+		}
+		if (head.next.next==null&&n ==2) {
+			head = head.next;
+			return head;
+		}
+		
+		return deletenote(head, n,count1);
+    }
+	public ListNode deletenote(ListNode tnode,int n,int count) {
+		if (tnode==null) {
+			count = 0;
+			return null;
+		}else {
+			tnode.next = deletenote(tnode.next, n, count);	
+			count1++;
+			if (count1==n+1) {
+				tnode.next = tnode.next.next;
+				return tnode;
+			}			
+		}
+		return tnode;
+	}
+	
+	
+	
+	
 }
